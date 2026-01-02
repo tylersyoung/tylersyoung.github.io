@@ -144,6 +144,18 @@ img {
   padding: 0 var(--space-lg);
 }
 
+.container-wide {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 0 var(--space-xl);
+}
+
+@media (max-width: 640px) {
+  .container-wide {
+    padding: 0 var(--space-lg);
+  }
+}
+
 /* Selection */
 ::selection {
   background: var(--color-accent);
