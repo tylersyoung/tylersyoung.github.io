@@ -1,0 +1,97 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog');
+  return posts.map((post) => ({
+    params: { slug: post.slug },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { Content } = await post.render();
+---
+
+<BaseLayout title={`${post.data.title} — Tyler Young`} description={post.data.description}>
+  <article class="container">
+    <header>
+      <p class="back"><a href="/">← Tyler Young</a></p>
+      <h1>{post.data.title}</h1>
+      <p class="meta">
+        {post.data.date.toLocaleDateString('en-US', { 
+          year: 'numeric', 
+          month: 'long', 
+          day: 'numeric' 
+        })}
+      </p>
+    </header>
+
+    <div class="content">
+      <Content />
+    </div>
+
+    <footer>
+      <a href="/">← Back home</a>
+    </footer>
+  </article>
+</BaseLayout>
+
+<style>
+  header {
+    margin-bottom: var(--space-xl);
+  }
+
+  .back {
+    margin-bottom: var(--space-md);
+    font-size: 0.9rem;
+  }
+
+  .back a {
+    color: var(--color-text-muted);
+  }
+
+  h1 {
+    margin-bottom: var(--space-sm);
+  }
+
+  .meta {
+    color: var(--color-text-muted);
+    font-family: var(--font-mono);
+    font-size: 0.9rem;
+    margin: 0;
+  }
+
+  .content {
+    margin-bottom: var(--space-xl);
+  }
+
+  .content :global(h2) {
+    margin-top: var(--space-xl);
+  }
+
+  .content :global(h3) {
+    margin-top: var(--space-lg);
+  }
+
+  .content :global(a) {
+    text-decoration: underline;
+    text-underline-offset: 2px;
+  }
+
+  .content :global(img) {
+    border-radius: 4px;
+    margin: var(--space-lg) 0;
+  }
+
+  footer {
+    padding-top: var(--space-lg);
+    border-top: 1px solid var(--color-border);
+  }
+
+  footer a {
+    color: var(--color-text-muted);
+    font-size: 0.9rem;
+  }
+</style>

@@ -1,0 +1,93 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const allPosts = await getCollection('blog', ({ data }) => !data.draft);
+const posts = allPosts.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+---
+
+<BaseLayout title="Writing — Tyler Young">
+  <div class="container">
+    <header>
+      <p class="back"><a href="/">← Tyler Young</a></p>
+      <h1>Writing</h1>
+    </header>
+
+    {posts.length > 0 ? (
+      <ul class="post-list">
+        {posts.map((post) => (
+          <li>
+            <span class="date">
+              {post.data.date.toLocaleDateString('en-US', { 
+                year: 'numeric', 
+                month: 'short',
+                day: 'numeric'
+              })}
+            </span>
+            <a href={`/blog/${post.slug}`}>{post.data.title}</a>
+            <p class="description">{post.data.description}</p>
+          </li>
+        ))}
+      </ul>
+    ) : (
+      <p class="empty">Nothing here yet.</p>
+    )}
+  </div>
+</BaseLayout>
+
+<style>
+  header {
+    margin-bottom: var(--space-xl);
+  }
+
+  .back {
+    margin-bottom: var(--space-md);
+    font-size: 0.9rem;
+  }
+
+  .back a {
+    color: var(--color-text-muted);
+  }
+
+  h1 {
+    margin-bottom: 0;
+  }
+
+  .post-list {
+    list-style: none;
+    padding: 0;
+  }
+
+  .post-list li {
+    margin-bottom: var(--space-lg);
+  }
+
+  .date {
+    display: block;
+    color: var(--color-text-muted);
+    font-size: 0.85rem;
+    font-family: var(--font-mono);
+    margin-bottom: var(--space-xs);
+  }
+
+  .post-list a {
+    font-weight: 600;
+    color: var(--color-text);
+  }
+
+  .post-list a:hover {
+    color: var(--color-accent);
+  }
+
+  .description {
+    color: var(--color-text-muted);
+    font-size: 0.95rem;
+    margin: var(--space-xs) 0 0 0;
+    line-height: 1.5;
+  }
+
+  .empty {
+    color: var(--color-text-muted);
+    font-style: italic;
+  }
+</style>

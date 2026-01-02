@@ -1,0 +1,171 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const allPosts = await getCollection('blog', ({ data }) => !data.draft);
+const posts = allPosts.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+
+const allProjects = await getCollection('projects');
+const projects = allProjects.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+---
+
+<BaseLayout title="Tyler Young">
+  <div class="container">
+    <header class="site-header">
+      <h1>Tyler Young</h1>
+      <p class="intro">
+        This is where I share my projects and thoughts.
+      </p>
+      <p class="intro">
+        I'm currently interested in longevity science, VR/AR, and bioengineering. I studied Electrical Engineering and Physics at Harvard.
+        Feel free to <a href="mailto:tylersyoung@protonmail.com">email me</a>.
+      </p>
+    </header>
+
+    <nav class="nav">
+      <a href="https://github.com/tyleryoung">GitHub</a> 
+    </nav>
+
+    <section id="writing">
+      <h2>Writing</h2>
+      {posts.length > 0 ? (
+        <ul class="post-list">
+          {posts.map((post) => (
+            <li>
+              <a href={`/blog/${post.slug}`}>{post.data.title}</a>
+              <span class="date">
+                {post.data.date.toLocaleDateString('en-US', { 
+                  year: 'numeric', 
+                  month: 'short'
+                })}
+              </span>
+              <p class="description">{post.data.description}</p>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p class="empty">Nothing here yet.</p>
+      )}
+    </section>
+
+    <section id="projects">
+      <h2>Projects</h2>
+      {projects.length > 0 ? (
+        <ul class="post-list">
+          {projects.map((project) => (
+            <li>
+              <a href={`/projects/${project.slug}`}>{project.data.title}</a>
+              {project.data.link && (
+                <a href={project.data.link} class="external-link">[live]</a>
+              )}
+              {project.data.github && (
+                <a href={project.data.github} class="external-link">[code]</a>
+              )}
+              <p class="description">{project.data.description}</p>
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p class="empty">Nothing here yet.</p>
+      )}
+    </section>
+
+    <footer class="site-footer">
+      <p>© {new Date().getFullYear()} Tyler Young</p>
+    </footer>
+  </div>
+</BaseLayout>
+
+<style>
+  .site-header {
+    margin-bottom: var(--space-lg);
+  }
+
+  .intro {
+    color: var(--color-text-muted);
+    font-size: 1rem;
+  }
+
+  .intro a {
+    color: var(--color-text);
+  }
+
+  .nav {
+    margin-bottom: var(--space-xl);
+    font-size: 0.95rem;
+  }
+
+  .nav a {
+    color: var(--color-text-muted);
+  }
+
+  .nav a:hover {
+    color: var(--color-accent);
+  }
+
+  section {
+    margin-bottom: var(--space-xl);
+  }
+
+  section h2 {
+    margin-top: 0;
+    margin-bottom: var(--space-md);
+    padding-bottom: var(--space-sm);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .post-list {
+    list-style: none;
+    padding: 0;
+  }
+
+  .post-list li {
+    margin-bottom: var(--space-lg);
+  }
+
+  .post-list li > a:first-child {
+    font-weight: 600;
+    color: var(--color-text);
+  }
+
+  .post-list li > a:first-child:hover {
+    color: var(--color-accent);
+  }
+
+  .date {
+    color: var(--color-text-muted);
+    font-size: 0.85rem;
+    margin-left: var(--space-sm);
+    font-family: var(--font-mono);
+  }
+
+  .external-link {
+    font-size: 0.85rem;
+    margin-left: var(--space-xs);
+    color: var(--color-text-muted);
+  }
+
+  .description {
+    color: var(--color-text-muted);
+    font-size: 0.95rem;
+    margin: var(--space-xs) 0 0 0;
+    line-height: 1.5;
+  }
+
+  .empty {
+    color: var(--color-text-muted);
+    font-style: italic;
+  }
+
+  .site-footer {
+    margin-top: var(--space-xl);
+    padding-top: var(--space-lg);
+    border-top: 1px solid var(--color-border);
+  }
+
+  .site-footer p {
+    color: var(--color-text-muted);
+    font-size: 0.85rem;
+    margin: 0;
+  }
+</style>

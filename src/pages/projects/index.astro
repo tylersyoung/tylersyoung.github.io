@@ -1,0 +1,100 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+const allProjects = await getCollection('projects');
+const projects = allProjects.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+---
+
+<BaseLayout title="Projects — Tyler Young">
+  <div class="container">
+    <header>
+      <p class="back"><a href="/">← Tyler Young</a></p>
+      <h1>Projects</h1>
+    </header>
+
+    {projects.length > 0 ? (
+      <ul class="project-list">
+        {projects.map((project) => (
+          <li>
+            <a href={`/projects/${project.slug}`}>{project.data.title}</a>
+            {project.data.link && (
+              <a href={project.data.link} class="external">[live]</a>
+            )}
+            {project.data.github && (
+              <a href={project.data.github} class="external">[code]</a>
+            )}
+            <p class="description">{project.data.description}</p>
+            {project.data.tags && (
+              <p class="tags">{project.data.tags.join(', ')}</p>
+            )}
+          </li>
+        ))}
+      </ul>
+    ) : (
+      <p class="empty">Nothing here yet.</p>
+    )}
+  </div>
+</BaseLayout>
+
+<style>
+  header {
+    margin-bottom: var(--space-xl);
+  }
+
+  .back {
+    margin-bottom: var(--space-md);
+    font-size: 0.9rem;
+  }
+
+  .back a {
+    color: var(--color-text-muted);
+  }
+
+  h1 {
+    margin-bottom: 0;
+  }
+
+  .project-list {
+    list-style: none;
+    padding: 0;
+  }
+
+  .project-list li {
+    margin-bottom: var(--space-xl);
+  }
+
+  .project-list li > a:first-child {
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: var(--color-text);
+  }
+
+  .project-list li > a:first-child:hover {
+    color: var(--color-accent);
+  }
+
+  .external {
+    font-size: 0.85rem;
+    margin-left: var(--space-sm);
+    color: var(--color-text-muted);
+  }
+
+  .description {
+    color: var(--color-text-muted);
+    margin: var(--space-xs) 0 0 0;
+    line-height: 1.5;
+  }
+
+  .tags {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
+    margin: var(--space-xs) 0 0 0;
+  }
+
+  .empty {
+    color: var(--color-text-muted);
+    font-style: italic;
+  }
+</style>

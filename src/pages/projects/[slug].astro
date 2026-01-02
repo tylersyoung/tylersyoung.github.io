@@ -1,0 +1,115 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getCollection } from 'astro:content';
+
+export async function getStaticPaths() {
+  const projects = await getCollection('projects');
+  return projects.map((project) => ({
+    params: { slug: project.slug },
+    props: { project },
+  }));
+}
+
+const { project } = Astro.props;
+const { Content } = await project.render();
+---
+
+<BaseLayout title={`${project.data.title} — Tyler Young`} description={project.data.description}>
+  <article class="container">
+    <header>
+      <p class="back"><a href="/">← Tyler Young</a></p>
+      <h1>{project.data.title}</h1>
+      <p class="description">{project.data.description}</p>
+      
+      <p class="links">
+        {project.data.link && (
+          <a href={project.data.link} target="_blank" rel="noopener">Live site ↗</a>
+        )}
+        {project.data.github && (
+          <a href={project.data.github} target="_blank" rel="noopener">Source code ↗</a>
+        )}
+      </p>
+      
+      {project.data.tags && (
+        <p class="tags">{project.data.tags.join(', ')}</p>
+      )}
+    </header>
+
+    <div class="content">
+      <Content />
+    </div>
+
+    <footer>
+      <a href="/">← Back home</a>
+    </footer>
+  </article>
+</BaseLayout>
+
+<style>
+  header {
+    margin-bottom: var(--space-xl);
+    padding-bottom: var(--space-lg);
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .back {
+    margin-bottom: var(--space-md);
+    font-size: 0.9rem;
+  }
+
+  .back a {
+    color: var(--color-text-muted);
+  }
+
+  h1 {
+    margin-bottom: var(--space-sm);
+  }
+
+  .description {
+    color: var(--color-text-muted);
+    font-size: 1.05rem;
+    margin-bottom: var(--space-md);
+  }
+
+  .links {
+    margin-bottom: var(--space-sm);
+  }
+
+  .links a {
+    margin-right: var(--space-md);
+  }
+
+  .tags {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    color: var(--color-text-muted);
+    margin: 0;
+  }
+
+  .content {
+    margin-bottom: var(--space-xl);
+  }
+
+  .content :global(h2) {
+    margin-top: var(--space-xl);
+  }
+
+  .content :global(h3) {
+    margin-top: var(--space-lg);
+  }
+
+  .content :global(img) {
+    border-radius: 4px;
+    margin: var(--space-lg) 0;
+  }
+
+  footer {
+    padding-top: var(--space-lg);
+    border-top: 1px solid var(--color-border);
+  }
+
+  footer a {
+    color: var(--color-text-muted);
+    font-size: 0.9rem;
+  }
+</style>
