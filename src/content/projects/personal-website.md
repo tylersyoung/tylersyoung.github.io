@@ -4,7 +4,6 @@ description: "A minimal, high-performance blog and portfolio built with Astro."
 date: 2025-01-01
 tags: ["astro", "typescript", "css"]
 link: "https://tylersyoung.github.io"
-github: "https://github.com/tylersyoung/website"
 featured: true
 ---
 This website serves as my personal blog and project showcase.
